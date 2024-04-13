@@ -1,12 +1,26 @@
 {
-  "news": [
-    {
-      "id": 1,
-      "title": "news_1",
-      "date": "2024-01-01T20:56:35",
-      "body": "The news",
-      "deleted": false,
-    },
-  ],
-  "news_count": 1,
-}
+	"news": [
+		{
+			"id": 1,
+			"title": "news_1",
+			"date": "2024-01-01T20:56:35",
+			"body": "The news",
+			"deleted": false
+		},
+		{
+			"id": 3,
+			"title": "news_3",
+			"date": "2024-04-14T11:23:52",
+			"body": "Commas after 'deleted' and 'comment' were removed. That was an awful thing to do in the first place",
+			"deleted": true
+		},
+		{
+			"id": 2,
+			"title": "Dolphins vanish",
+			"date": "1979-12-01T12:34:56",
+			"body": "So long, and thanks for all the fish",
+			"deleted": false
+		}
+	],
+	"news_count": 1
+} 
