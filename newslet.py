@@ -15,7 +15,7 @@ by Egor Maksimov, 2024
 from fastapi import FastAPI, HTTPException
 import sys
 from newslet_json_parser import *     # Функции, возвращающие запросы новостей и комментариев:
-                                        #news_records, 
+                                        #news_records(), news_id_set(), news_select(news_id)
 
 if sys.version_info[0] < 3 and sys.version_info[0] < 12:    # Проверка версии Python
     raise Exception("Python 3.12 or a more recent version is required.")    # !!! Check if Python 3.10 runs it okay
@@ -30,13 +30,14 @@ async def root():
     return {"news": res, "news_count": len(res)}
 
 
-@news_app.get("/news/{item_id}")
-async def read_news(item_id: int):
+@news_app.get("/news/{news_id}")
+async def read_news(news_id: int):
 
-    news = {1: 'yay', 2: 'nay', 3: 'deleted'}
-    if item_id not in news:
+    news_set = news_id_set()
+    
+    if news_id not in news_set:
         raise HTTPException(status_code=404, detail="News not found")
-    elif news[item_id] == 'deleted':
-        raise HTTPException(status_code=404, detail="News deleted")
-        
-    return {"item": news[item_id]}
+#    elif news_set[news_id] == 'deleted':
+#        raise HTTPException(status_code=404, detail="News deleted")
+    else:    
+        return news_select(news_id)
