@@ -16,7 +16,7 @@
 		},
 		{
 			"id": 3,
-			"news_id": 1,
+			"news_id": 2,
 			"title": "comment_1",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Sad comment :("
@@ -30,7 +30,7 @@
 		},
 		{
 			"id": 11,
-			"news_id": 1,
+			"news_id": 2,
 			"title": "comment_1",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Spam comment"
