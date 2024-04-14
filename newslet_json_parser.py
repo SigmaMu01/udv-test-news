@@ -41,8 +41,9 @@ def news_records():     # Выгрузка всех новостей одним 
     for n_entry in gen:
         count = c_count[n_entry['id']] if n_entry['id'] in c_count else 0   #Если комментариев нет, то 0
         n_entry['comments_count'] = count
-        res.append(n_entry)
-    
+        if not n_entry['deleted']:
+            res.append(n_entry)
+            
     return res
 
 

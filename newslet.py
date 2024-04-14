@@ -25,7 +25,8 @@ news_app = FastAPI()    # Вызов API
 
 @news_app.get("/")
 async def root():
-    return {"news": news_records()}
+    res = news_records()
+    return {"news": res, "news_count": len(res)}
 
 
 #@news_app.get("/news/{id}")
