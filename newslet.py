@@ -35,9 +35,9 @@ async def read_news(news_id: int):
 
     news_set = news_id_set()
     
-    if news_id not in news_set:
+    if news_id not in news_set[0]:
         raise HTTPException(status_code=404, detail="News not found")
-#    elif news_set[news_id] == 'deleted':
-#        raise HTTPException(status_code=404, detail="News deleted")
+    elif news_id in news_set[1]:
+        raise HTTPException(status_code=404, detail="News deleted")
     else:    
         return news_select(news_id)

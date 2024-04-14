@@ -9,29 +9,27 @@ by Egor Maksimov, 2024
 import json
 
 
-def n_gen():
-    return (data_entry for data_entry in js_dump.data_news['news'])
-    
-    
-def c_gen():
-    return (data_entry for data_entry in js_dump.data_comments['comments'])
+def n_gen():    # Генератор записей новостей из news.json
 
-
-def js_dump():
-
-    f_news = open('news.json', encoding="utf-8")
-    f_comments = open('comments.json', encoding="utf-8")
-
-    js_dump.data_news = json.load(f_news)       # !!! Read the file line by line instead of the whole thing
-    js_dump.data_comments = json.load(f_comments)
-
+    f_news = open('news.json', encoding="utf-8")    # !!! Read the file line by line instead of the whole thing
+    data_news = json.load(f_news)
     f_news.close()
+    
+    return (data_entry for data_entry in data_news['news'])
+    
+    
+def c_gen():    # Генератор записей комментариев из comments.json
+
+    f_comments = open('comments.json', encoding="utf-8")
+    data_comments = json.load(f_comments)
     f_comments.close()
+    
+    return (data_entry for data_entry in data_comments['comments'])
 
 
 def comments_count():
 
-    c_count = {}        # Возвращаем словарь {id новости: кол-во комментов}, чтобы проверка занимала O(n)
+    c_count = {}    # Возвращаем словарь {id новости: кол-во комментов}, чтобы проверка занимала O(n)
     
     for c_entry in c_gen():
         n_id = c_entry['news_id']
@@ -43,14 +41,11 @@ def comments_count():
     return c_count
 
 
-def news_records():     # Выгрузка всех новостей одним запросом
-
-    js_dump()   # Обновление записей
+def news_records(): # Выгрузка всех новостей одним запросом
 
     res = []
     c_count = comments_count()  # Cловарь {id новости: кол-во комментов}
-    
-    
+        
     for n_entry in n_gen():
         count = c_count[n_entry['id']] if n_entry['id'] in c_count else 0   #Если комментариев нет, то 0
         n_entry['comments_count'] = count
@@ -60,26 +55,22 @@ def news_records():     # Выгрузка всех новостей одним 
     return res
 
 
-def news_id_set():
+def news_id_set(): # Множество всех идентификаторов новостей {news_id}
 
-    js_dump()   # Обновление записей
-    
     n_set = set()
-    
-    
+    n_set_d = set()     #Удалённые новости
+        
     for n_entry in n_gen():
-        if not n_entry['deleted']:
-            n_set.add(n_entry['id'])
+        n_set.add(n_entry['id'])
+        if n_entry['deleted']:
+            n_set_d.add(n_entry['id'])
     
-    return n_set
+    return (n_set, n_set_d)
 
-def news_select(news_id):
-
-    js_dump()   # Обновление записей
+def news_select(news_id): #Запись {новость, комментарии} для /news/{news_id}
     
     res = {}
-    
-    
+        
     for n_entry in n_gen():
         if n_entry['id'] == news_id:
             res = n_entry

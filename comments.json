@@ -10,28 +10,28 @@
 		{
 			"id": 2,
 			"news_id": 1,
-			"title": "comment_1",
+			"title": "comment_2",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Funny comment"
 		},
 		{
 			"id": 3,
 			"news_id": 2,
-			"title": "comment_1",
+			"title": "comment_3",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Sad comment :("
 		},
 		{
 			"id": 4,
 			"news_id": 1,
-			"title": "comment_1",
+			"title": "comment_4",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Obnoxious comment"
 		},
 		{
 			"id": 11,
 			"news_id": 2,
-			"title": "comment_1",
+			"title": "comment_5",
 			"date": "2024-01-02T21:58:25",
 			"comment": "Spam comment"
 		}
