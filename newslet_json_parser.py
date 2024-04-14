@@ -9,8 +9,11 @@ by Egor Maksimov, 2024
 import json
 
 
-def n_gen():    # Генератор записей новостей из news.json
-
+def n_gen():
+    """
+    Генератор записей новостей из news.json
+    """
+    
     f_news = open('news.json', encoding="utf-8")    # !!! Read the file line by line instead of the whole thing
     data_news = json.load(f_news)
     f_news.close()
@@ -18,8 +21,11 @@ def n_gen():    # Генератор записей новостей из news.j
     return (data_entry for data_entry in data_news['news'])
     
     
-def c_gen():    # Генератор записей комментариев из comments.json
-
+def c_gen():
+    """
+    Генератор записей комментариев из comments.json
+    """
+    
     f_comments = open('comments.json', encoding="utf-8")
     data_comments = json.load(f_comments)
     f_comments.close()
@@ -27,11 +33,11 @@ def c_gen():    # Генератор записей комментариев и�
     return (data_entry for data_entry in data_comments['comments'])
 
 
-def comments_count():
+def comments_count(c_gen):
 
     c_count = {}    # Возвращаем словарь {id новости: кол-во комментов}, чтобы проверка занимала O(n)
     
-    for c_entry in c_gen():
+    for c_entry in c_gen:
         n_id = c_entry['news_id']
         if n_id not in c_count.keys():
             c_count[n_id] = 1
@@ -41,12 +47,15 @@ def comments_count():
     return c_count
 
 
-def news_records(): # Выгрузка всех новостей одним запросом
+def news_records(n_gen, c_gen):
+    """
+    Выгрузка всех новостей одним запросом
+    """
 
     res = []
-    c_count = comments_count()  # Cловарь {id новости: кол-во комментов}
+    c_count = comments_count(c_gen)  # Cловарь {id новости: кол-во комментов}
         
-    for n_entry in n_gen():
+    for n_entry in n_gen:
         count = c_count[n_entry['id']] if n_entry['id'] in c_count else 0   #Если комментариев нет, то 0
         n_entry['comments_count'] = count
         if not n_entry['deleted']:
@@ -55,32 +64,36 @@ def news_records(): # Выгрузка всех новостей одним за
     return res
 
 
-def news_id_set(): # Множество всех идентификаторов новостей {news_id}
+def news_select(n_gen, news_id):
+    """
+    Проверка состояния новости по {news_id}
+    """
 
-    n_set = set()
-    n_set_d = set()     #Удалённые новости
-        
-    for n_entry in n_gen():
-        n_set.add(n_entry['id'])
-        if n_entry['deleted']:
-            n_set_d.add(n_entry['id'])
+    deleted = False
+    found_entry = {}
     
-    return (n_set, n_set_d)
-
-def news_select(news_id): #Запись {новость, комментарии} для /news/{news_id}
-    
-    res = {}
-        
-    for n_entry in n_gen():
+    for n_entry in n_gen:
         if n_entry['id'] == news_id:
-            res = n_entry
+            if n_entry['deleted']:
+                deleted = True
+                break
+            found_entry = n_entry
             break
+                
+    return (deleted, found_entry)
+
+
+def news_print(c_gen, n_entry):
+    """
+    Запись {новость, комментарии} для /news/{news_id}
+    """
     
+    res = n_entry
     res['comments'] = []
     c_count = 0
     
-    for c_entry in c_gen():
-        if c_entry['news_id'] == news_id:
+    for c_entry in c_gen:
+        if c_entry['news_id'] == n_entry['id']:
             del c_entry['news_id']
             res['comments'].append(c_entry)
             c_count += 1
