@@ -9,7 +9,7 @@ by Egor Maksimov, 2024
 import json
 
 
-def n_open(path = 'news.json'):
+def n_open(path='news.json'):
 
     f_news = open(path, encoding="utf-8")
     data_news = json.load(f_news)
@@ -18,7 +18,7 @@ def n_open(path = 'news.json'):
     return data_news
 
 
-def c_open(path = 'comments.json'):
+def c_open(path='comments.json'):
 
     f_comments = open(path, encoding="utf-8")
     data_comments = json.load(f_comments)
@@ -27,7 +27,7 @@ def c_open(path = 'comments.json'):
     return data_comments
     
     
-def add_news(entry, path = 'news.json'):
+def add_news(entry, path='news.json'):
     """Запись новых новостей в news.json"""
     
     data_news = n_open()
@@ -39,7 +39,7 @@ def add_news(entry, path = 'news.json'):
     f_news.close()
     
 
-def delete_news(n_gen, news_id, path = 'news.json'):
+def delete_news(n_gen, news_id, path='news.json'):
     """Удаление новости переустановкой флага"""
 
     news = []
@@ -129,7 +129,7 @@ def news_print(c_gen, n_entry):
     
     for c_entry in c_gen:
         if c_entry['news_id'] == n_entry['id']:
-            del c_entry['news_id']
+#            del c_entry['news_id']     # По заданию удалять не нужно, но красивее будет убрать после обнаружения
             res['comments'].append(c_entry)
             c_count += 1
     res['comments_count'] = c_count
