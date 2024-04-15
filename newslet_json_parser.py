@@ -9,22 +9,67 @@ by Egor Maksimov, 2024
 import json
 
 
-def n_gen(path = 'news.json'):
-    """Генератор записей новостей из news.json"""
-    
+def n_open(path = 'news.json'):
+
     f_news = open(path, encoding="utf-8")
     data_news = json.load(f_news)
     f_news.close()
+
+    return data_news
+
+
+def c_open(path = 'comments.json'):
+
+    f_comments = open(path, encoding="utf-8")
+    data_comments = json.load(f_comments)
+    f_comments.close()
+    
+    return data_comments
+    
+    
+def add_news(entry, path = 'news.json'):
+    """Запись новых новостей в news.json"""
+    
+    data_news = n_open()
+    data_news['news'].append(dict(entry))
+    data_news['news_count'] += 1
+    
+    f_news = open(path, mode='w', encoding="utf-8")
+    json.dump(data_news, f_news)
+    f_news.close()
+    
+
+def delete_news(n_gen, news_id, path = 'news.json'):
+    """Удаление новости переустановкой флага"""
+
+    news = []
+    news_count = 0
+    
+    for n_entry in n_gen:
+        if n_entry['id'] == news_id:
+            n_entry['deleted'] = True
+        news.append(n_entry)
+        news_count += 1
+        
+    data_news = {'news': news, 'news_count': news_count}
+
+    f_news = open(path, mode='w', encoding="utf-8")
+    json.dump(data_news, f_news)
+    f_news.close()
+
+    
+def n_gen():
+    """Генератор записей новостей из news.json"""
+    
+    data_news = n_open()
     
     return (data_entry for data_entry in data_news['news'])
     
     
-def c_gen(path = 'comments.json'):
+def c_gen():
     """Генератор записей комментариев из comments.json"""
     
-    f_comments = open(path, encoding="utf-8")
-    data_comments = json.load(f_comments)
-    f_comments.close()
+    data_comments = c_open()
     
     return (data_entry for data_entry in data_comments['comments'])
 
