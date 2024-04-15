@@ -9,28 +9,39 @@ by Egor Maksimov, 2024
 import json
 
 
-def n_gen():
-    """
-    Генератор записей новостей из news.json
-    """
+def n_gen(path = 'news.json'):
+    """Генератор записей новостей из news.json"""
     
-    f_news = open('news.json', encoding="utf-8")    # !!! Read the file line by line instead of the whole thing
+    f_news = open(path, encoding="utf-8")
     data_news = json.load(f_news)
     f_news.close()
     
     return (data_entry for data_entry in data_news['news'])
     
     
-def c_gen():
-    """
-    Генератор записей комментариев из comments.json
-    """
+def c_gen(path = 'comments.json'):
+    """Генератор записей комментариев из comments.json"""
     
-    f_comments = open('comments.json', encoding="utf-8")
+    f_comments = open(path, encoding="utf-8")
     data_comments = json.load(f_comments)
     f_comments.close()
     
     return (data_entry for data_entry in data_comments['comments'])
+
+
+def news_records(n_gen, c_gen):
+    """Выгрузка всех новостей одним запросом"""
+
+    res = []
+    c_count = comments_count(c_gen)  # Cловарь {id новости: кол-во комментов}
+        
+    for n_entry in n_gen:
+        count = c_count[n_entry['id']] if n_entry['id'] in c_count else 0   #Если комментариев нет, то 0
+        n_entry['comments_count'] = count
+        if not n_entry['deleted']:
+            res.append(n_entry)
+            
+    return res
 
 
 def comments_count(c_gen):
@@ -45,29 +56,10 @@ def comments_count(c_gen):
             c_count[n_id] += 1
             
     return c_count
-
-
-def news_records(n_gen, c_gen):
-    """
-    Выгрузка всех новостей одним запросом
-    """
-
-    res = []
-    c_count = comments_count(c_gen)  # Cловарь {id новости: кол-во комментов}
-        
-    for n_entry in n_gen:
-        count = c_count[n_entry['id']] if n_entry['id'] in c_count else 0   #Если комментариев нет, то 0
-        n_entry['comments_count'] = count
-        if not n_entry['deleted']:
-            res.append(n_entry)
-            
-    return res
-
+    
 
 def news_select(n_gen, news_id):
-    """
-    Проверка состояния новости по {news_id}
-    """
+    """Проверка состояния новости по {news_id}"""
 
     deleted = False
     found_entry = {}
@@ -84,9 +76,7 @@ def news_select(n_gen, news_id):
 
 
 def news_print(c_gen, n_entry):
-    """
-    Запись {новость, комментарии} для /news/{news_id}
-    """
+    """Запись {новость, комментарии} для /news/{news_id}"""
     
     res = n_entry
     res['comments'] = []
