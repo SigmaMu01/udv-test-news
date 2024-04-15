@@ -17,7 +17,7 @@ from pydantic import BaseModel
 import s_time                       # Функции, возвращающие текущее время
 import sys
 from newslet_json_parser import *   # Функции, возвращающие запросы новостей и комментариев:
-                                    # n_gen(), c_gen(), news_records(n_gen, c_gen), news_select(n_gen, news_id), news_print(c_gen, n_entry), add_news(entry, path = 'news.json')
+                                    # n_gen(), c_gen(), news_records(n_gen, c_gen), news_select(n_gen, news_id), news_print(c_gen, n_entry), add_news(entry, path = 'news.json'), delete_news(n_gen, news_id, path='news.json')
 
 if sys.version_info[0] < 3 and sys.version_info[0] < 12:    # Проверка версии Python
     raise Exception("Python 3.12 or a more recent version is required.")    # ! Не проверено, но должно запускаться на 3.10
@@ -56,13 +56,14 @@ async def read_news(news_id: int):
 
 @news_app.post("/news/new")     # Используем Postman для имитации POST-запросов по HTTP-адресу
 async def create_news(item: News):
+
     item.id = s_time.id()
     item.date = s_time.date()
-    add_news(item)
+    json_dump(add_news(item))
 
 
-@news_app.post("/news/{news_id}")   # Передаём через Postman /news/{news_id}?deleted=true
+@news_app.post("/news/{news_id}")   # Передаём через Postman /news/{news_id}?delete=True
 async def remove_news(news_id: int, delete: bool | None = False):
 
     if delete:
-        delete_news(n_gen(), news_id)
+        json_dump(delete_news(n_gen(), news_id))

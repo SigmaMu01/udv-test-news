@@ -27,6 +27,13 @@ def c_open(path='comments.json'):
     return data_comments
     
     
+def json_dump(data, path='news.json'):
+
+    f_news = open(path, mode='w', encoding="utf-8")
+    json.dump(data, f_news)
+    f_news.close()
+    
+    
 def add_news(entry, path='news.json'):
     """Запись новых новостей в news.json"""
     
@@ -34,10 +41,8 @@ def add_news(entry, path='news.json'):
     data_news['news'].append(dict(entry))
     data_news['news_count'] += 1
     
-    f_news = open(path, mode='w', encoding="utf-8")
-    json.dump(data_news, f_news)
-    f_news.close()
-    
+    return data_news
+        
 
 def delete_news(n_gen, news_id, path='news.json'):
     """Удаление новости переустановкой флага"""
@@ -52,10 +57,8 @@ def delete_news(n_gen, news_id, path='news.json'):
         news_count += 1
         
     data_news = {'news': news, 'news_count': news_count}
-
-    f_news = open(path, mode='w', encoding="utf-8")
-    json.dump(data_news, f_news)
-    f_news.close()
+    
+    return data_news
 
     
 def n_gen():
